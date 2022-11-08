@@ -57,7 +57,7 @@ class View extends React.Component{
             <Center position={[0,-.8,-3]}>
                 <MyText3D
                     text="Web Developer"
-                    size={.7}
+                    size={.6}
                     height={0}
                     col={0x373737}
                     rot={[-Math.PI/2,0,0]}
@@ -68,8 +68,8 @@ class View extends React.Component{
                 />
             </Center>
             <Link
-                pos={[-1,-.9,0]}
-                spotTar={[-1.5,0,1]}
+                pos={[-.6,-.9,0]}
+                spotTar={[-1,0,1]}
                 spotPos={[1.5,-1,5]}
                 text="Github"
                 size={.3}
@@ -83,8 +83,8 @@ class View extends React.Component{
                 url={"https://github.com/charlie-s1"}
             />
             <Link
-                pos={[1,-.9,0]}
-                spotTar={[1.5,0,1]}
+                pos={[.6,-.9,0]}
+                spotTar={[1,0,1]}
                 spotPos={[-1.5,-1,5]}
                 text={`Gradient\nGame`}
                 lHeight={.75}
