@@ -7,7 +7,7 @@ import {Center, SpotLight, Text3D, MeshReflectorMaterial,Float, OrbitControls, u
 import puddleNormal from './puddleNormal.jpg'
 import puddle from './puddle.jpg';
 import fontJson from 'three/examples/fonts/helvetiker_bold.typeface.json';
-import { Vector2} from 'three';
+import { BoxGeometry, Vector2} from 'three';
 
 
 class View extends React.Component{
@@ -17,20 +17,8 @@ class View extends React.Component{
   render(){
     return(
         <Canvas camera={{position:[0,4,5]}}>
-            <spotLight 
-                position={[5,1,2]}
-                intensity={1}
-                angle={1}
-                color={0xff0000}
-                penumbra={1}
-            />
-            <spotLight 
-                position={[-5,1,2]}
-                intensity={1}
-                color={0x0000ff}
-                penumbra={1}
-            />
-            <ambientLight intensity={.5}/>
+            <Lighting/>
+            <ambientLight intensity={1}/>
             <Ground/>
            
             <Float
@@ -103,7 +91,7 @@ class View extends React.Component{
             <OrbitControls
                 enableZoom={false}
                 enablePan={false}
-                maxPolarAngle={1.6}
+                maxPolarAngle={1.4}
             />
             
         </Canvas>
@@ -129,12 +117,14 @@ function Ground(){
     puddleTexture.wrapS = puddleTexture.wrapT = THREE.RepeatWrapping;
     return(
         <mesh receiveShadow rotation-x={-Math.PI/2} position={[0,-1,0]}>
-            <planeGeometry attach={"geometry"} args={[50,50]} />
+            <planeGeometry attach={"geometry"} args={[25,25]} />
             <MeshReflectorMaterial 
                 attach={"material"} 
                 resolution={1024}
                 normalMap={puddleNorm}
                 normalScale={normalScale}
+                distortionMap={puddleTexture}
+                distortion={.25}
                 mixBlur={10}
                 blur={[2500,2500]}
                 depthToBlurRatioBias={.2}
@@ -144,6 +134,24 @@ function Ground(){
             />
         </mesh>
     );
+}
+function Lighting(props){
+    return(
+        <mesh>
+            <pointLight
+               position={[-2,2,-1.3]}
+               color={0xff0000} 
+               intensity={10}
+               distance={7}
+            />
+            <pointLight
+                position={[2,2,-1.3]}
+                color={0x0000ff} 
+                intensity={10}
+                distance={7}
+            />
+        </mesh>
+    )
 }
 function Link(props){
     const colour = new THREE.Color();
@@ -158,7 +166,7 @@ function Link(props){
         if (hovered) document.body.style.cursor = 'pointer'
         return () => (document.body.style.cursor = 'auto')
     }, [hovered])
-    useFrame(({ camera }) => {
+    useFrame(() => {
         light.current.visible = hovered ? true : false;
         light.current.target.position.lerp(new THREE.Vector3(props.spotTar[0],props.spotTar[1],props.spotTar[2]),.1)
     })
