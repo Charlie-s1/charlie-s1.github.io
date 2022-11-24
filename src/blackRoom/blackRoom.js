@@ -5,6 +5,7 @@ import { FontLoader } from 'three-stdlib';
 import {Center, SpotLight, Text3D, MeshReflectorMaterial,Float, OrbitControls, useTexture} from '@react-three/drei';
 
 import puddleNormal from './puddleNormal.jpg'
+import puddleDistortion from './puddleDistortion.jpg';
 import puddle from './puddle.jpg';
 import fontJson from 'three/examples/fonts/helvetiker_bold.typeface.json';
 import { BoxGeometry, Vector2} from 'three';
@@ -42,7 +43,7 @@ class View extends React.Component{
 
             </Float>
             
-            <Center position={[0,-.8,-3]}>
+            <Center position={[0,-.8,-1.5]}>
                 <MyText3D
                     text="Web Developer"
                     size={.6}
@@ -56,7 +57,7 @@ class View extends React.Component{
                 />
             </Center>
             <Link
-                pos={[-.6,-.9,0]}
+                pos={[-.6,-.9,.1]}
                 spotTar={[-1,0,1]}
                 spotPos={[1.5,-1,5]}
                 text="Github"
@@ -71,7 +72,7 @@ class View extends React.Component{
                 url={"https://github.com/charlie-s1"}
             />
             <Link
-                pos={[.6,-.9,0]}
+                pos={[.6,-.9,.1]}
                 spotTar={[1,0,1]}
                 spotPos={[-1.5,-1,5]}
                 text={`Gradient\nGame`}
@@ -110,11 +111,14 @@ function Wall(){
     )
 }
 function Ground(){
-    const puddleNorm = useTexture(puddleNormal)
+    const puddleNorm = useTexture(puddleNormal);
     const normalScale = React.useMemo(()=>new Vector2(.5,.5));
     puddleNorm.wrapS = puddleNorm.wrapT = THREE.RepeatWrapping
     const puddleTexture = useLoader(THREE.TextureLoader,puddle);
     puddleTexture.wrapS = puddleTexture.wrapT = THREE.RepeatWrapping;
+    const puddleDistort = useTexture(puddleDistortion);
+    puddleDistort.wrapS = puddleDistort.wrapT = THREE.RepeatWrapping;
+
     return(
         <mesh receiveShadow rotation-x={-Math.PI/2} position={[0,-1,0]}>
             <planeGeometry attach={"geometry"} args={[25,25]} />
@@ -122,13 +126,19 @@ function Ground(){
                 attach={"material"} 
                 resolution={1024}
                 normalMap={puddleNorm}
-                normalScale={normalScale}
-                distortionMap={puddleTexture}
-                distortion={.25}
-                mixBlur={10}
-                blur={[2500,2500]}
-                depthToBlurRatioBias={.2}
-                mixStrength={1}
+                normalScale={.4}
+                depthScale={0}
+                // distortionMap={puddleDistort}
+                roughnessMap={puddleDistort}
+                // color={0xfff}
+                roughness={2}
+                distortion={0}
+                mixBlur={1}
+                blur={[500,500]}
+                minDepthThreshold={.8}
+                maxDepthThreshold={1.2}
+                depthToBlurRatioBias={.1}
+                mixStrength={.5}
                 mixContrast={1}
                 mirror={1}
             />
@@ -139,13 +149,13 @@ function Lighting(props){
     return(
         <mesh>
             <pointLight
-               position={[-2,2,-1.3]}
+               position={[-2,3,-1.3]}
                color={0xff0000} 
                intensity={10}
                distance={7}
             />
             <pointLight
-                position={[2,2,-1.3]}
+                position={[2,3,-1.3]}
                 color={0x0000ff} 
                 intensity={10}
                 distance={7}
